@@ -56,7 +56,7 @@ def print_banner():
     print(banner)
     print(f"{C}[+] Project: Enjleezect | Version: {G}v4.5 {C}| Status: {G}SECURE")
     print(f"{C}[+] Architecture: Zero-Knowledge & Recoverable Offline")
-    print(f"{C}[+] Facebook: {W}https://facebook.com")
+    print(f"{C}[+] Facebook: {W}https://facebook.com/enjleez")
     print(f"{G}--------------------------------------------------{W}\n")
 
 def main():
