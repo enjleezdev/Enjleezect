@@ -1,36 +1,60 @@
-import secrets
-import string
+import hashlib
+import base64
 
-def generate_secure_password(length=24):
-    characters = string.ascii_letters + string.digits + "!@#$%^&*()-_=+"
-    return ''.join(secrets.choice(characters) for _ in range(length))
+def generate_deterministic_password(master_password, service_name, length=20):
+    # الملح (Salt) الثابت والخاص بك لزيادة الأمان ومنع هجمات جداول القوس قزح
+    salt = b"Enjleez_Secure_Deterministic_Salt_2026"
+    
+    # استخدام خوارزمية PBKDF2 لعمل 100,000 دورة تشفير واشتقاق مفتاح قوي
+    derived_key = hashlib.pbkdf2_hmac(
+        'sha256',
+        master_password.encode('utf-8'),
+        salt,
+        100000,
+        dklen=32
+    )
+    
+    # دمج اسم الموقع لضمان أن كل موقع له كلمة مرور مختلفة تماماً
+    final_hash = hashlib.sha256(derived_key + service_name.lower().strip().encode('utf-8')).digest()
+    
+    # تحويل التشفير إلى نص مقروء باستخدام Base64
+    password_b64 = base64.b64encode(final_hash).decode('utf-8')
+    
+    # تنظيف النص وتعديله ليحتوي على رموز وأرقام وحروف، وقصه حسب الطول المطلوب
+    # قمنا باستبدال بعض الحروف القياسية برموز خاصة لزيادة تعقيد كلمة المرور أمنياً
+    secure_password = password_b64.replace('+', '@').replace('/', '#').replace('=', '$')
+    
+    return secure_password[:length]
 
 def main():
     print("==================================================")
-    print("      E N J L E E Z   Password Generator v1.0    ")
+    print("   E N J L E E Z   Zero-Knowledge PassGen v2.0   ")
     print("==================================================")
-    print("   Developed by: E N J L E E Z (@enjleez)         ")
+    print("   [!] No Files Saved - 100% Secure & Recoverable ")
     print("==================================================\n")
     
-    length_input = input("Enter password length [Default 24]: ").strip()
-    length = int(length_input) if length_input.isdigit() else 24
-    
-    password = generate_secure_password(length)
-    
-    file_name = input("Enter output file name (e.g., my_pass.txt): ").strip()
-    if not file_name:
-        file_name = "enjleez_password.txt"
-    
-    if not file_name.endswith(".txt"):
-        file_name += ".txt"
+    master = input("Enter your Master Password (كلمتك السرية الثابتة): ").strip()
+    if not master:
+        print("[-] Master password cannot be empty!")
+        return
         
-    try:
-        with open(file_name, "w") as f:
-            f.write(password)
-        print(f"\n[+] Success! Secure password generated and saved to: {file_name}")
-        print("[!] Note: Now you can encrypt this file using 'Enjleez Encryptor Tool' to secure it!")
-    except Exception as e:
-        print(f"[-] Error saving file: {e}")
+    service = input("Enter website/service name (e.g., google, facebook): ").strip()
+    if not service:
+        print("[-] Service name cannot be empty!")
+        return
+        
+    length_input = input("Enter password length [Default 20]: ").strip()
+    length = int(length_input) if length_input.isdigit() else 20
+    
+    # توليد كلمة المرور رياضياً
+    password = generate_deterministic_password(master, service, length)
+    
+    print("\n" + "="*50)
+    print(f"[+] Your secure password for ({service}) is:")
+    print(f"👉  {password}")
+    print("="*50)
+    print("[*] Remember: This password is calculated mathematically. If you lose your PC,")
+    print("[*] just run this tool anywhere with the same inputs to get it back!")
 
 if __name__ == "__main__":
     main()
