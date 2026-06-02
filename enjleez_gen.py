@@ -29,12 +29,12 @@ def generate_strict_password(master_password, private_pepper, service_name, leng
     password_b64 = base64.b64encode(final_hash).decode('utf-8')
     clean_base = password_b64.replace('+', '').replace('/', '').replace('=', '')
     
-    mandatory_upper = chr(65 + (final_hash % 26))
-    mandatory_lower = chr(97 + (final_hash % 26))
-    mandatory_digit = chr(48 + (final_hash % 10))
+    mandatory_upper = chr(65 + (final_hash[0] % 26))
+    mandatory_lower = chr(97 + (final_hash[1] % 26))
+    mandatory_digit = chr(48 + (final_hash[2] % 10))
     
     special_chars = "@#$%!*&?"
-    mandatory_special = special_chars[final_hash % len(special_chars)]
+    mandatory_special = special_chars[final_hash[3] % len(special_chars)]
     
     prefix = mandatory_upper + mandatory_lower + mandatory_digit + mandatory_special
     remaining_length = length - len(prefix)
@@ -45,18 +45,18 @@ def generate_strict_password(master_password, private_pepper, service_name, leng
 def print_banner():
     os.system('clear') # تنظيف الشاشة لتنسيق الواجهة
     banner = f"""{G}{BC}
-███████╗███╗   ██╗██╗██╗      ███████╗███████╗███████╗██████╗ 
-██╔════╝████╗  ██║██║██║      ██╔════╝██╔════╝╚══███╔╝██╔══██╗
-█████╗  ██╔██╗ ██║██║██║      █████╗  █████╗    ███╔╝ ██████╔╝
-██╔══╝  ██║╚██╗██║██║██║      ██╔══╝  ██╔══╝   ███╔╝  ██╔══██╗
-███████╗██║ ╚████║██║███████╗███████╗███████╗███████╗██║  ██║
-╚══════╝╚═╝  ╚═══╝╚═╝╚══════╝╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝
+███████╗███╗   ██╗     ██████╗ ██╗     ███████╗███████╗███████╗
+██╔════╝████╗  ██║     ╚══██║  ██║     ██╔════╝██╔════╝╚══███╔╝
+█████╗  ██╔██╗ ██║        ██║  ██║     █████╗  █████╗    ███╔╝ 
+██╔══╝  ██║╚██╗██║   ██   ██║  ██║     ██╔══╝  ██╔══╝   ███╔╝  
+███████╗██║ ╚████║   ╚█████╔╝  ███████╗███████╗███████╗███████╗
+╚══════╝╚═╝  ╚═══╝    ╚════╝   ╚══════╝╚══════╝╚══════╝╚══════╝
              [ P A S S W O R D   G E N E R A T O R ]
     """
     print(banner)
     print(f"{C}[+] Project: Enjleezect | Version: {G}v4.5 {C}| Status: {G}SECURE")
     print(f"{C}[+] Architecture: Zero-Knowledge & Recoverable Offline")
-    print(f"{C}[+] Facebook: {W}https://www.facebook.com/Enjleez/")
+    print(f"{C}[+] Facebook: {W}https://facebook.com")
     print(f"{G}--------------------------------------------------{W}\n")
 
 def main():
